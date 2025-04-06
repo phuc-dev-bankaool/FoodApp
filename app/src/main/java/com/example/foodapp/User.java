@@ -28,12 +28,9 @@ public class User {
     public String getPassword() {
         return password;
     }
-
-
     public String getRole() {
         return role;
     }
-
     public void setId(int id) { this.id = id; }
     public void setName(String name) { this.name = name; }
     public void setEmail(String email) { this.email = email; }
