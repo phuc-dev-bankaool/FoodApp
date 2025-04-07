@@ -20,6 +20,7 @@ public class HomeActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         // Gọi phương thức onCreate của lớp cha
         super.onCreate(savedInstanceState);
 

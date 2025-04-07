@@ -1,0 +1,71 @@
+package com.example.foodapp;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
+
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
+
+    private Context context;
+    private List<User> userList;
+    private OnUserActionListener listener;
+
+    public interface OnUserActionListener {
+        void onEdit(User user);
+        void onDelete(User user);
+        void onChangeRole(User user);
+    }
+
+    public UserAdapter(Context context, List<User> userList, OnUserActionListener listener) {
+        this.context = context;
+        this.userList = userList;
+        this.listener = listener;
+    }
+
+    public static class UserViewHolder extends RecyclerView.ViewHolder {
+        TextView txtName, txtEmail, txtRole;
+        Button btnEdit, btnDelete, btnChangeRole;
+
+        public UserViewHolder(View itemView) {
+            super(itemView);
+            txtName = itemView.findViewById(R.id.txtUserName);
+            txtEmail = itemView.findViewById(R.id.txtUserEmail);
+            txtRole = itemView.findViewById(R.id.txtUserRole);
+            btnEdit = itemView.findViewById(R.id.btnEditUser);
+            btnDelete = itemView.findViewById(R.id.btnDeleteUser);
+            btnChangeRole = itemView.findViewById(R.id.btnChangeRole);
+        }
+    }
+
+    @NonNull
+    @Override
+    public UserAdapter.UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_user_row, parent, false);
+        return new UserViewHolder(view);
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onBindViewHolder(@NonNull UserAdapter.UserViewHolder holder, int position) {
+        User user = userList.get(position);
+        holder.txtName.setText(user.getName());
+        holder.txtEmail.setText(user.getEmail());
+        holder.txtRole.setText("Role " + user.getRole());
+
+        holder.btnEdit.setOnClickListener(v -> listener.onEdit(user));
+        holder.btnDelete.setOnClickListener(v -> listener.onDelete(user));
+        holder.btnChangeRole.setOnClickListener(v -> listener.onChangeRole(user));
+    }
+
+    @Override
+    public int getItemCount() {
+        return userList.size();
+    }
+}

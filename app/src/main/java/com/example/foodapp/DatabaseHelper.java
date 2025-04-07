@@ -14,14 +14,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "FoodApp.db";
     private static final int DATABASE_VERSION = 3;
 
-
     // Cột của bảng users
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_USER_ID = "id";
     private static final String COLUMN_USER_NAME = "name";
     private static final String COLUMN_USER_EMAIL = "email";
     private static final String COLUMN_USER_PASSWORD = "password";
-
     private static final String COLUMN_USER_ROLE = "role";
 
     // Tạo bảng users
@@ -53,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_FOOD_PRICE + " REAL, " +
                     COLUMN_FOOD_STATUS + " INTEGER" +
                     ")";
+
     // Cột của bảng categories
     private static final String TABLE_CATEGORIES = "categories";
     private static final String COLUMN_CATEGORY_ID = "category_id";
@@ -128,6 +127,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(TABLE_USERS, null, values);
         db.close();
         return result != -1;
+    }
+    public List<User> getAllUsers(){
+        List<User> userList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_NAME));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_EMAIL));
+                String password = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_PASSWORD));
+                String role = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_ROLE));
+                userList.add(new User(id, name, email, password, role));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return userList;
+    }
+    public boolean deleteUser(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_USERS, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+        db.close();
+        return result > 0;
+    }
+    public void updateUserRole(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_ROLE, user.getRole());
+        db.update(TABLE_USERS, values, COLUMN_USER_ID + "=?", new String[]{String.valueOf(user.getId())});
+        db.close();
     }
     public User getUserRole(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();

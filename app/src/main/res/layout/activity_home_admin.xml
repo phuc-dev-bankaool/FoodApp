@@ -1,8 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/admin_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/white"
+    android:padding="16dp"
+    android:id="@+id/adminHomeActivity">
+
+    <!-- Header Admin -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/adminHeaderCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/adminWelcomeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Xin chào, Admin"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/logoutButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_logout"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Đăng xuất"
+                app:tint="@color/black" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Grid Menu Các Chức Năng Quản Lý -->
+    <GridLayout
+        android:id="@+id/adminFunctionGrid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:alignmentMode="alignMargins"
+        android:rowOrderPreserved="false"
+        android:useDefaultMargins="true"
+        app:layout_constraintTop_toBottomOf="@id/adminHeaderCard"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Quản lý User -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/manageUsersCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_manage_users"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quản lý User"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Quản lý Danh mục -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/manageCategoriesCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_category"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quản lý Danh mục"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Quản lý Sản phẩm -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/manageProductsCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_product"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quản lý Sản phẩm"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Quản lý Đơn hàng & Thống kê -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/manageOrdersCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_order_stats"
+                    app:tint="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quản lý Đơn hàng"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </GridLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

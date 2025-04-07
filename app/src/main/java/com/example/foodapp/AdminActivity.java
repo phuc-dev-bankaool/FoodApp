@@ -1,30 +1,57 @@
 package com.example.foodapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class AdminActivity extends AppCompatActivity {
+    CardView manageUsersCard, manageCategoriesCard, manageProductsCard, manageOrdersCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_admin);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.admin_home), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        // Ánh xạ view
+        manageUsersCard = findViewById(R.id.manageUsersCard);
+        manageCategoriesCard = findViewById(R.id.manageCategoriesCard);
+        manageProductsCard = findViewById(R.id.manageProductsCard);
+        manageOrdersCard = findViewById(R.id.manageOrdersCard);
+
+        // Bắt sự kiện click
+        manageUsersCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminActivity.this, ManageUsersActivity.class));
+            }
         });
-        // list all User
-        // list all Food
-        // add new Food
-        // remove Food
-        // edit Food
-        // remove User
+
+        manageCategoriesCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminActivity.this, ManageCategoriesActivity.class));
+            }
+        });
+
+        manageProductsCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminActivity.this, ManageProductsActivity.class));
+            }
+        });
+
+        manageOrdersCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminActivity.this, ManageOrdersActivity.class));
+            }
+        });
     }
 }
