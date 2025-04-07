@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "FoodApp.db";
     private static final int DATABASE_VERSION = 3;
@@ -163,6 +166,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
+    public List<Food> getAllFoods() {
+        List<Food> foodList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_FOODS, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOOD_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FOOD_NAME));
+                int imageResId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOOD_IMAGE));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FOOD_DESCRIPTION));
+                float price = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_FOOD_PRICE));
+                boolean status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOOD_STATUS)) == 1;
+
+                foodList.add(new Food(id, name, imageResId, description, price, status));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return foodList;
+    }
+
     public boolean addCategory(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

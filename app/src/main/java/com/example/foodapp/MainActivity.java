@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if (user != null) {
             if (Objects.equals(user.getRole(), "user")) {
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                intent.putExtra("loggedInUser", user);
                 startActivity(intent);
             } else if (Objects.equals(user.getRole(), "admin")) {
                 Intent intent = new Intent(MainActivity.this, AdminActivity.class);
