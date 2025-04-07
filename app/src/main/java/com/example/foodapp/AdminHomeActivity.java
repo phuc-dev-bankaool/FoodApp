@@ -3,12 +3,14 @@ package com.example.foodapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 public class AdminHomeActivity extends AppCompatActivity {
     CardView manageUsersCard, manageCategoriesCard, manageProductsCard, manageOrdersCard;
+    ImageButton logoutBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,10 @@ public class AdminHomeActivity extends AppCompatActivity {
         manageCategoriesCard = findViewById(R.id.manageCategoriesCard);
         manageProductsCard = findViewById(R.id.manageProductsCard);
         manageOrdersCard = findViewById(R.id.manageOrdersCard);
-
+        logoutBtn = findViewById(R.id.logoutButton);
+        logoutBtn.setOnClickListener(v -> {
+            logoutUser();
+        });
         // Bắt sự kiện click
         manageUsersCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,5 +54,12 @@ public class AdminHomeActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminHomeActivity.this, ManageOrdersActivity.class));
             }
         });
+    }
+
+    private void logoutUser() {
+        Intent intent = new Intent(AdminHomeActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
