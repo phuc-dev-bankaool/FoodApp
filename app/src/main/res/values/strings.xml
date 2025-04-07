@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">FoodApp</string>
     <string name="cart">Giỏ hàng</string>
+    <string name="logout">log out</string>
+    <string name="food">food</string>
+    <string name="order">order</string>
+    <string name="drink">drink</string>
 </resources>

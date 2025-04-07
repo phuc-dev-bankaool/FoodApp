@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         signInTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         boolean isAdded = db.addUser(name, email, pwd);
         if (isAdded) {
             Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Register failed", Toast.LENGTH_SHORT).show();
