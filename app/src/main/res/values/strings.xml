@@ -5,4 +5,5 @@
     <string name="food">food</string>
     <string name="order">order</string>
     <string name="drink">drink</string>
+    <string name="rollBack">rollBack</string>
 </resources>

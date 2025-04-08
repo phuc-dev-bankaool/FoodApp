@@ -30,7 +30,7 @@ public class UserHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_user);
 
         // Lấy thông tin người dùng đã đăng nhập từ Intent
-        loggedInUser = (User) getIntent().getSerializableExtra("loggedInUser");
+        loggedInUser = (User) getIntent().getParcelableExtra("loggedInUser");
 
         // Kiểm tra xem người dùng đã đăng nhập hay chưa, nếu chưa thì kết thúc hoạt động
         if (loggedInUser == null) {

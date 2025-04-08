@@ -1,5 +1,6 @@
 package com.example.foodapp;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ public class ManageUsersActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewUsers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        userList = db.getAllUsers(); // bạn cần thêm hàm getAllUsers trong DatabaseHelper
+        userList = db.getAllUsers();
         adapter = new UserAdapter(this, userList, new UserAdapter.OnUserActionListener() {
             @Override
             public void onEdit(User user) {
@@ -31,30 +32,29 @@ public class ManageUsersActivity extends AppCompatActivity {
                 // TODO: mở dialog sửa user
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDelete(User user) {
                 boolean success = db.deleteUser(user.getId());
                 if (success) {
-                    Toast.makeText(ManageUsersActivity.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageUsersActivity.this, "Delete user successfully", Toast.LENGTH_SHORT).show();
                     userList.remove(user);
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(ManageUsersActivity.this, "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ManageUsersActivity.this, "Delete user failed", Toast.LENGTH_SHORT).show();
                 }
             }
             public void onChangeRole(User user) {
-                // Gợi ý: Toggle role từ "user" -> "admin" hoặc ngược lại
                 if (user.getRole().equals("user")) {
                     user.setRole("admin");
                 } else {
                     user.setRole("user");
                 }
-                db.updateUserRole(user); // Cần hàm này trong DatabaseHelper
+                db.updateUserRole(user);
                 adapter.notifyDataSetChanged();
                 Toast.makeText(ManageUsersActivity.this, "Vai trò đã chuyển", Toast.LENGTH_SHORT).show();
             }
         });
-
         recyclerView.setAdapter(adapter);
     }
 }
