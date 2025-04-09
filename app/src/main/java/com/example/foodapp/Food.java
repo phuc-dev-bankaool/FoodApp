@@ -2,16 +2,15 @@ package com.example.foodapp;
 public class Food {
     private int id;
     private String name;
-    private int imageResId;
+//    private int imageResId;
     private String description;
     private float price;
     private boolean status;
 
 
-    public Food(int id, String name, int imageResId, String description, float price, boolean status) {
+    public Food(int id, String name,  String description, float price, boolean status) {
         this.id = id;
         this.name = name;
-        this.imageResId = imageResId;
         this.description = description;
         this.price = price;
         this.status = status;
@@ -31,14 +30,6 @@ public class Food {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getImageResId() {
-        return imageResId;
-    }
-
-    public void setImageResId(int imageResId) {
-        this.imageResId = imageResId;
     }
 
     public String getDescription() {

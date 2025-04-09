@@ -107,6 +107,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public boolean addUser(String name, String email, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(TABLE_USERS,
+                new String[]{COLUMN_USER_ID},
+                COLUMN_USER_EMAIL + "=?",
+                new String[]{email},
+                null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.close();
+            db.close();
+            return false;
+        }
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER_NAME, name);
         values.put(COLUMN_USER_EMAIL, email);
@@ -182,17 +192,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
     }
-    public boolean addFood(String name, int imageResId, String description, float price, boolean status) {
+    public long addFood(Food food) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_FOOD_NAME, name);
-        values.put(COLUMN_FOOD_IMAGE, imageResId);
-        values.put(COLUMN_FOOD_DESCRIPTION, description);
-        values.put(COLUMN_FOOD_PRICE, price);
-        values.put(COLUMN_FOOD_STATUS, status ? 1 : 0);
+        values.put(COLUMN_FOOD_NAME, food.getName());
+        values.put(COLUMN_FOOD_DESCRIPTION, food.getDescription());
+        values.put(COLUMN_FOOD_PRICE, food.getPrice());
+        values.put(COLUMN_FOOD_STATUS, food.isStatus() ? 1 : 0);
+
         long result = db.insert(TABLE_FOODS, null, values);
         db.close();
-        return result != -1;
+
+        return result;
     }
     public List<Food> getAllFoods() {
         List<Food> foodList = new ArrayList<>();
@@ -207,7 +218,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FOOD_DESCRIPTION));
                 float price = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_FOOD_PRICE));
                 boolean status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOOD_STATUS)) == 1;
-                foodList.add(new Food(id, name, imageResId, description, price, status));
+                foodList.add(new Food(id, name, description, price, status));
             } while (cursor.moveToNext());
         }
 
@@ -220,7 +231,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_FOOD_NAME, food.getName());
-        values.put(COLUMN_FOOD_IMAGE, food.getImageResId());
         values.put(COLUMN_FOOD_DESCRIPTION, food.getDescription());
         values.put(COLUMN_FOOD_PRICE, food.getPrice());
         values.put(COLUMN_FOOD_STATUS, food.isStatus() ? 1 : 0);

@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Register failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Email already exists", Toast.LENGTH_SHORT).show();
         }
     }
 }

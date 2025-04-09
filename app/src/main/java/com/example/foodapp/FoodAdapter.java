@@ -19,6 +19,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public interface OnFoodActionListener {
         void onEdit(Food food);
         void onDelete(Food food);
+        void onAdd(Food food);
     }
 
     private Context context;
@@ -30,10 +31,24 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         this.foodList = foodList;
         this.listener = listener;
     }
-    public FoodAdapter(Context context, List<Food> foodList) {
+    public FoodAdapter(Context context, List<Food> fosodList) {
         this.context = context;
         this.foodList = foodList;
-        this.listener = null; // không có hành động
+        this.listener = null;
+    }
+    public static class FoodViewHolder extends RecyclerView.ViewHolder {
+        ImageView foodImageView;
+        TextView nameTextView, descriptionTextView, priceTextView;
+        ImageButton editButton, deleteButton;
+
+        public FoodViewHolder(@NonNull View itemView) {
+            super(itemView);
+            nameTextView = itemView.findViewById(R.id.textFoodName);
+            descriptionTextView = itemView.findViewById(R.id.textFoodDescription);
+            priceTextView = itemView.findViewById(R.id.textFoodPrice);
+            editButton = itemView.findViewById(R.id.buttonEdit);
+            deleteButton = itemView.findViewById(R.id.buttonDelete);
+        }
     }
     @NonNull
     @Override
@@ -49,7 +64,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.nameTextView.setText(food.getName());
         holder.descriptionTextView.setText(food.getDescription());
         holder.priceTextView.setText(String.format("%.0f VNĐ", food.getPrice()));
-        holder.foodImageView.setImageResource(food.getImageResId());
 
         holder.editButton.setOnClickListener(v -> listener.onEdit(food));
         holder.deleteButton.setOnClickListener(v -> listener.onDelete(food));
@@ -59,19 +73,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public int getItemCount() {
         return foodList.size();
     }
-
-    public static class FoodViewHolder extends RecyclerView.ViewHolder {
-        ImageView foodImageView;
-        TextView nameTextView, descriptionTextView, priceTextView;
-        ImageButton editButton, deleteButton;
-
-        public FoodViewHolder(@NonNull View itemView) {
-            super(itemView);
-            nameTextView = itemView.findViewById(R.id.textFoodName);
-            descriptionTextView = itemView.findViewById(R.id.textFoodDescription);
-            priceTextView = itemView.findViewById(R.id.textFoodPrice);
-            editButton = itemView.findViewById(R.id.buttonEdit);
-            deleteButton = itemView.findViewById(R.id.buttonDelete);
-        }
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateList(List<Food> newFoodList) {
+        this.foodList = newFoodList;
+        notifyDataSetChanged();
     }
+
 }
