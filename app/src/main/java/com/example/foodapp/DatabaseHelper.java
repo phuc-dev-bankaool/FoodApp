@@ -51,17 +51,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_FOOD_PRICE + " REAL, " +
                     COLUMN_FOOD_STATUS + " INTEGER" +
                     ")";
-
-    // Cột của bảng categories
-    private static final String TABLE_CATEGORIES = "categories";
-    private static final String COLUMN_CATEGORY_ID = "category_id";
-    private static final String COLUMN_CATEGORY_NAME = "category_name";
-    // Tạo bảng categories
-    private static final String CREATE_TABLE_CATEGORIES =
-            "CREATE TABLE " + TABLE_CATEGORIES + " (" +
-                    COLUMN_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_CATEGORY_NAME + " TEXT" +
-                    ")";
     // Cột của bảng giỏ hàng (cart)
     private static final String TABLE_CART = "cart";
     private static final String COLUMN_CART_ID = "cart_id";
@@ -121,6 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER_NAME, name);
         values.put(COLUMN_USER_EMAIL, email);
+        // TODO: check email existing or not
         values.put(COLUMN_USER_PASSWORD, password);
         values.put(COLUMN_USER_ROLE, email.contains("admin0") ? "admin" : "user");
 
@@ -151,6 +141,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean deleteUser(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(TABLE_USERS, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+        db.close();
+        return result > 0;
+    }
+    public boolean deleteFood (int foodId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_FOODS, COLUMN_FOOD_ID + "=?", new String[]{String.valueOf(foodId)});
         db.close();
         return result > 0;
     }
@@ -211,7 +207,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FOOD_DESCRIPTION));
                 float price = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_FOOD_PRICE));
                 boolean status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOOD_STATUS)) == 1;
-
                 foodList.add(new Food(id, name, imageResId, description, price, status));
             } while (cursor.moveToNext());
         }
@@ -221,14 +216,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return foodList;
     }
 
-    public boolean addCategory(String name) {
+    public boolean updateFood(Food food) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_CATEGORY_NAME, name);
-        long result = db.insert(TABLE_CATEGORIES, null, values);
+        values.put(COLUMN_FOOD_NAME, food.getName());
+        values.put(COLUMN_FOOD_IMAGE, food.getImageResId());
+        values.put(COLUMN_FOOD_DESCRIPTION, food.getDescription());
+        values.put(COLUMN_FOOD_PRICE, food.getPrice());
+        values.put(COLUMN_FOOD_STATUS, food.isStatus() ? 1 : 0);
+        int rows = db.update(TABLE_FOODS, values, COLUMN_FOOD_ID + "=?", new String[]{String.valueOf(food.getId())});
         db.close();
-        return result != -1;
+        return rows > 0;
     }
+
     public boolean addToCart(int userId, int foodId, int quantity) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -266,7 +266,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_RATINGS);
@@ -274,7 +273,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // Sau khi xóa các bảng, tạo lại chúng
             db.execSQL(CREATE_TABLE_USERS);
             db.execSQL(CREATE_TABLE_FOODS);
-            db.execSQL(CREATE_TABLE_CATEGORIES);
             db.execSQL(CREATE_TABLE_CART);
             db.execSQL(CREATE_TABLE_ORDERS);
             db.execSQL(CREATE_TABLE_RATINGS);
@@ -284,7 +282,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RATINGS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         onCreate(db);

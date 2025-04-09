@@ -84,15 +84,15 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_manage_users"
+                android:src="@drawable/ic_product"
                 android:contentDescription="Manage Users Icon"
                 />
 
             <TextView
-                android:id="@+id/manageUsersTitle"
+                android:id="@+id/manageProductTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Users"
+                android:text="Manage Products"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginStart="8dp"/>
@@ -100,28 +100,28 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailSearchInputLayout"
+        android:id="@+id/foodSearchInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:hint="Search by email"
+        android:hint="Search by food name..."
         app:layout_constraintTop_toBottomOf="@+id/manageProductsTitleContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailSearchEditText"
+            android:id="@+id/foodNameSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewUsers"
+        android:id="@+id/recyclerViewFood"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/emailSearchInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/foodSearchInputLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

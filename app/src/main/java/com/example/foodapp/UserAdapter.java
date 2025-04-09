@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +19,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private OnUserActionListener listener;
 
     public interface OnUserActionListener {
-        void onEdit(User user);
         void onDelete(User user);
         void onChangeRole(User user);
     }
@@ -31,16 +31,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtEmail, txtRole;
-        Button btnEdit, btnDelete, btnChangeRole;
+        ImageButton btnEdit, btnDelete, btnChangeRole;
 
         public UserViewHolder(View itemView) {
             super(itemView);
-            txtName = itemView.findViewById(R.id.txtUserName);
-            txtEmail = itemView.findViewById(R.id.txtUserEmail);
-            txtRole = itemView.findViewById(R.id.txtUserRole);
-            btnEdit = itemView.findViewById(R.id.btnEditUser);
-            btnDelete = itemView.findViewById(R.id.btnDeleteUser);
-            btnChangeRole = itemView.findViewById(R.id.btnChangeRole);
+            txtName = itemView.findViewById(R.id.textUserName);
+            txtEmail = itemView.findViewById(R.id.textUserEmail);
+            txtRole = itemView.findViewById(R.id.textUserRole);
+            btnDelete = itemView.findViewById(R.id.buttonDelete);
+            btnChangeRole = itemView.findViewById(R.id.buttonRole);
         }
     }
 
@@ -58,8 +57,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.txtName.setText(user.getName());
         holder.txtEmail.setText(user.getEmail());
         holder.txtRole.setText("Role " + user.getRole());
-
-        holder.btnEdit.setOnClickListener(v -> listener.onEdit(user));
+        // Set behavior for buttons
         holder.btnDelete.setOnClickListener(v -> listener.onDelete(user));
         holder.btnChangeRole.setOnClickListener(v -> listener.onChangeRole(user));
     }
@@ -67,5 +65,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @Override
     public int getItemCount() {
         return userList.size();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateList(List<User> newList) {
+        this.userList = newList;
+        notifyDataSetChanged();
     }
 }

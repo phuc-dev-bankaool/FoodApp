@@ -25,6 +25,7 @@
         <activity android:name=".UserHomeActivity"/>
         <activity android:name=".AdminHomeActivity"/>
         <activity android:name=".ManageUsersActivity"/>
+        <activity android:name=".ManageProductsActivity"/>
     </application>
 
 </manifest>

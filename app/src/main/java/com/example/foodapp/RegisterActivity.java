@@ -15,20 +15,23 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
+    private Button registerButton;
+    private TextView signInTextView;
     private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        // khởi tạo database helper
         db = new DatabaseHelper(this);
+        // khởi tạo các view trong layout
         nameEditText = findViewById(R.id.nameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
-        Button registerButton = findViewById(R.id.registerButton);
-        TextView signInTextView = findViewById(R.id.loginTextView);
+        registerButton = findViewById(R.id.registerButton);
+        signInTextView = findViewById(R.id.loginTextView);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.registerLinearLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

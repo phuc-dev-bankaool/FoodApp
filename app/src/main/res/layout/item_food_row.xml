@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -13,71 +13,77 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Tên người dùng -->
+        <!-- Tên món ăn -->
         <TextView
-            android:id="@+id/textUserName"
+            android:id="@+id/textFoodName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Nguyễn Văn A"
+            android:text="Bánh Mì Chả"
+            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textUserEmail"
-            app:layout_constraintEnd_toStartOf="@+id/buttonDelete"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <!-- Email -->
+            app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textFoodDescription" />
+
+        <!-- Mô tả -->
         <TextView
-            android:id="@+id/textUserEmail"
+            android:id="@+id/textFoodDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="user@example.com"
+            android:text="Món ăn truyền thống Việt Nam"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@id/textUserRole"
-            app:layout_constraintEnd_toStartOf="@+id/buttonDelete"
-            app:layout_constraintHorizontal_bias="0"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/textFoodName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textUserName" />
-        <!-- Role -->
+            app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+            app:layout_constraintBottom_toTopOf="@+id/textFoodPrice" />
+
+        <!-- Giá -->
         <TextView
-            android:id="@+id/textUserRole"
+            android:id="@+id/textFoodPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/admin"
+            android:text="25.000 đ"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/buttonDelete"
-            app:layout_constraintHorizontal_bias="0"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/textFoodDescription"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonEdit"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Nút Sửa -->
+        <ImageButton
+            android:id="@+id/buttonEdit"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_edit"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:contentDescription="Edit Food"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textUserEmail"
-            />
+            app:layout_constraintEnd_toStartOf="@+id/buttonDelete" />
+
+        <!-- Nút Xoá -->
         <ImageButton
             android:id="@+id/buttonDelete"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginEnd="8dp"
-            android:adjustViewBounds="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Delete User"
-            android:scaleType="centerInside"
             android:src="@drawable/ic_delete"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonRole"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/buttonRole"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Change Role"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_switch_role"
+            android:adjustViewBounds="true"
+            android:contentDescription="Delete Food"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

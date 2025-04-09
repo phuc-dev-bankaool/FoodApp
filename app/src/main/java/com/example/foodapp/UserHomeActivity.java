@@ -49,6 +49,7 @@ public class UserHomeActivity extends AppCompatActivity {
         logoutBtn.setOnClickListener(v -> {
             logoutUser();
         });
+
         // Hiển thị danh sách món ăn
         foodRecyclerView = findViewById(R.id.foodRecyclerView);
 
@@ -59,10 +60,8 @@ public class UserHomeActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         List<Food> foodList = databaseHelper.getAllFoods();
-
         // Khởi tạo adapter
-        foodAdapter = new FoodAdapter(foodList);
-
+        foodAdapter = new FoodAdapter(this, foodList);
         // Gán adapter cho RecyclerView
         foodRecyclerView.setAdapter(foodAdapter);
     }

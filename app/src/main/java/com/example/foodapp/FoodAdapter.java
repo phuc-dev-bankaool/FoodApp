@@ -1,9 +1,11 @@
 package com.example.foodapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,17 +16,29 @@ import java.util.List;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
 
-    private List<Food> foodList;
-
-    public FoodAdapter(List<Food> foodList) {
-        this.foodList = foodList;
+    public interface OnFoodActionListener {
+        void onEdit(Food food);
+        void onDelete(Food food);
     }
 
+    private Context context;
+    private List<Food> foodList;
+    private OnFoodActionListener listener;
+
+    public FoodAdapter(Context context, List<Food> foodList, OnFoodActionListener listener) {
+        this.context = context;
+        this.foodList = foodList;
+        this.listener = listener;
+    }
+    public FoodAdapter(Context context, List<Food> foodList) {
+        this.context = context;
+        this.foodList = foodList;
+        this.listener = null; // không có hành động
+    }
     @NonNull
     @Override
     public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_food, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_food_row, parent, false);
         return new FoodViewHolder(view);
     }
 
@@ -36,6 +50,9 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.descriptionTextView.setText(food.getDescription());
         holder.priceTextView.setText(String.format("%.0f VNĐ", food.getPrice()));
         holder.foodImageView.setImageResource(food.getImageResId());
+
+        holder.editButton.setOnClickListener(v -> listener.onEdit(food));
+        holder.deleteButton.setOnClickListener(v -> listener.onDelete(food));
     }
 
     @Override
@@ -46,13 +63,15 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView foodImageView;
         TextView nameTextView, descriptionTextView, priceTextView;
+        ImageButton editButton, deleteButton;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
-            foodImageView = itemView.findViewById(R.id.foodImageView);
-            nameTextView = itemView.findViewById(R.id.nameTextView);
-            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
-            priceTextView = itemView.findViewById(R.id.priceTextView);
+            nameTextView = itemView.findViewById(R.id.textFoodName);
+            descriptionTextView = itemView.findViewById(R.id.textFoodDescription);
+            priceTextView = itemView.findViewById(R.id.textFoodPrice);
+            editButton = itemView.findViewById(R.id.buttonEdit);
+            deleteButton = itemView.findViewById(R.id.buttonDelete);
         }
     }
 }

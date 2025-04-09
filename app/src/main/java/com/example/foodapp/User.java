@@ -16,6 +16,7 @@ public class User implements Parcelable {
         id = in.readInt();
         name = in.readString();
         email = in.readString();
+        password = in.readString();
         role = in.readString();
     }
 
@@ -36,6 +37,7 @@ public class User implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(name);
         parcel.writeString(email);
+        parcel.writeString(password);
         parcel.writeString(role);
     }
 
@@ -43,7 +45,7 @@ public class User implements Parcelable {
     public int describeContents() {
         return 0;
     }
-    public User(int id, String name, String email, String password,  String role) {
+    public User(int id, String name, String email, String password, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -56,7 +58,6 @@ public class User implements Parcelable {
     public String getName() {
         return name;
     }
-
     public String getEmail() {
         return email;
     }

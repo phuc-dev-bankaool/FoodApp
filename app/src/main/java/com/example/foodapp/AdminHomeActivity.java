@@ -2,6 +2,7 @@ package com.example.foodapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -10,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 public class AdminHomeActivity extends AppCompatActivity {
-    CardView manageUsersCard, manageCategoriesCard, manageProductsCard, manageOrdersCard;
+    CardView manageUsersCard,manageProductsCard, manageOrdersCard;
     ImageButton logoutBtn;
     User loggedAdmin;
 
@@ -18,7 +19,8 @@ public class AdminHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_admin);
-        loggedAdmin = (User) getIntent().getParcelableExtra("loggedInUser");
+        loggedAdmin = (User) getIntent().getParcelableExtra("loggedInAdmin");
+        Log.d("DEBUG", "loggedAdmin: " + loggedAdmin);
         if (loggedAdmin == null) {
             // Xử lý trường hợp người dùng chưa đăng nhập
             Intent intent = new Intent(AdminHomeActivity.this, LoginActivity.class);
@@ -31,7 +33,6 @@ public class AdminHomeActivity extends AppCompatActivity {
         }
         // Ánh xạ view
         manageUsersCard = findViewById(R.id.manageUsersCard);
-        manageCategoriesCard = findViewById(R.id.manageCategoriesCard);
         manageProductsCard = findViewById(R.id.manageProductsCard);
         manageOrdersCard = findViewById(R.id.manageOrdersCard);
         logoutBtn = findViewById(R.id.logoutButton);
@@ -43,29 +44,29 @@ public class AdminHomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AdminHomeActivity.this, ManageUsersActivity.class);
-                intent.putExtra("loggedInUser", loggedAdmin);
+                intent.putExtra("loggedInAdmin", loggedAdmin);
                 startActivity(intent);
-            }
-        });
-
-        manageCategoriesCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AdminHomeActivity.this, ManageCategoriesActivity.class));
+                finish();
             }
         });
 
         manageProductsCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AdminHomeActivity.this, ManageProductsActivity.class));
+                Intent intent = new Intent(AdminHomeActivity.this, ManageProductsActivity.class);
+                intent.putExtra("loggedInAdmin", loggedAdmin);
+                startActivity(intent);
+                finish();
             }
         });
 
         manageOrdersCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AdminHomeActivity.this, ManageOrdersActivity.class));
+                Intent intent = new Intent(AdminHomeActivity.this, ManageUsersActivity.class);
+                intent.putExtra("loggedInAdmin", loggedAdmin);
+                startActivity(intent);
+                finish();
             }
         });
     }

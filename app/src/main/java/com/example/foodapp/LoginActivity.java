@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             } else if (Objects.equals(user.getRole(), "admin")) {
                 Intent intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+                intent.putExtra("loggedInAdmin", user);
                 startActivity(intent);
             }
         }else{

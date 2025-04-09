@@ -7,6 +7,7 @@ public class Food {
     private float price;
     private boolean status;
 
+
     public Food(int id, String name, int imageResId, String description, float price, boolean status) {
         this.id = id;
         this.name = name;
