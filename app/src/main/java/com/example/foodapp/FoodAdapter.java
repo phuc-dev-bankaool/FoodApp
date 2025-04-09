@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
@@ -25,15 +26,16 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     private Context context;
     private List<Food> foodList;
     private OnFoodActionListener listener;
-
+    // adapter cho admin
     public FoodAdapter(Context context, List<Food> foodList, OnFoodActionListener listener) {
         this.context = context;
         this.foodList = foodList;
         this.listener = listener;
     }
-    public FoodAdapter(Context context, List<Food> fosodList) {
+    //adapter cho user
+    public FoodAdapter(Context context, List<Food> foodListUser) {
         this.context = context;
-        this.foodList = foodList;
+        this.foodList = foodListUser != null ? foodListUser : new ArrayList<>();
         this.listener = null;
     }
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
@@ -53,7 +55,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     @NonNull
     @Override
     public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_food_row, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_food_admin, parent, false);
         return new FoodViewHolder(view);
     }
 
@@ -65,13 +67,20 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.descriptionTextView.setText(food.getDescription());
         holder.priceTextView.setText(String.format("%.0f VNĐ", food.getPrice()));
 
-        holder.editButton.setOnClickListener(v -> listener.onEdit(food));
-        holder.deleteButton.setOnClickListener(v -> listener.onDelete(food));
+        if (listener != null) {
+            holder.editButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.editButton.setOnClickListener(v -> listener.onEdit(food));
+            holder.deleteButton.setOnClickListener(v -> listener.onDelete(food));
+        } else {
+            holder.editButton.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return foodList != null ? foodList.size() : 0;
     }
     @SuppressLint("NotifyDataSetChanged")
     public void updateList(List<Food> newFoodList) {

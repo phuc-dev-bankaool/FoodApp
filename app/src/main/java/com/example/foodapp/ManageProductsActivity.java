@@ -30,7 +30,8 @@ public class ManageProductsActivity extends AppCompatActivity {
     private User loggedAdmin;
     private EditText foodNameSearch;
     private TextView emptyTextView;
-
+    private static final int REQUEST_CODE_PERMISSION = 100;
+    private static final int REQUEST_CODE_PICK_IMAGE = 101;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

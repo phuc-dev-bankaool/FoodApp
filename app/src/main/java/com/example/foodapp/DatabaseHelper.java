@@ -120,7 +120,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER_NAME, name);
         values.put(COLUMN_USER_EMAIL, email);
-        // TODO: check email existing or not
         values.put(COLUMN_USER_PASSWORD, password);
         values.put(COLUMN_USER_ROLE, email.contains("admin0") ? "admin" : "user");
 
