@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -31,7 +32,7 @@ public class UserHomeActivity extends AppCompatActivity {
 
         // Lấy thông tin người dùng đã đăng nhập từ Intent
         loggedInUser = (User) getIntent().getParcelableExtra("loggedInUser");
-
+        Log.d("UserHomeActivity", "Logged in user: " + loggedInUser);
         // Kiểm tra xem người dùng đã đăng nhập hay chưa, nếu chưa thì kết thúc hoạt động
         if (loggedInUser == null) {
             // Xử lý trường hợp người dùng chưa đăng nhập

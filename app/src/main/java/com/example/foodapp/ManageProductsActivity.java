@@ -23,6 +23,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.provider.MediaStore;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -241,19 +245,35 @@ public class ManageProductsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            if (currentImageButton != null) {
-                currentImageButton.setImageURI(selectedImageUri);
+            Uri originalUri = data.getData();
+            try {
+                String fileName = "food_image_" + System.currentTimeMillis() + ".jpg";
+                File imageFile = new File(getFilesDir(), fileName);
+                InputStream inputStream = getContentResolver().openInputStream(originalUri);
+                FileOutputStream outputStream = new FileOutputStream(imageFile);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                inputStream.close();
+                outputStream.close();
+
+                selectedImageUri = Uri.fromFile(imageFile);
+                if (currentImageButton != null) {
+                    currentImageButton.setImageURI(selectedImageUri);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
+                selectedImageUri = null;
             }
         }
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        // Kiểm tra lại quyền khi quay lại từ Settings
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-            // Quyền đã được cấp, không cần làm gì thêm
         }
     }
 

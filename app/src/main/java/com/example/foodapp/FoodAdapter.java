@@ -27,17 +27,20 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     private Context context;
     private List<Food> foodList;
     private OnFoodActionListener listener;
+    private boolean isAdmin;
     // adapter cho admin
     public FoodAdapter(Context context, List<Food> foodList, OnFoodActionListener listener) {
         this.context = context;
         this.foodList = foodList;
         this.listener = listener;
+        this.isAdmin = true;
     }
     //adapter cho user
     public FoodAdapter(Context context, List<Food> foodListUser) {
         this.context = context;
         this.foodList = foodListUser != null ? foodListUser : new ArrayList<>();
         this.listener = null;
+        this.isAdmin = false;
     }
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView foodImageView;
