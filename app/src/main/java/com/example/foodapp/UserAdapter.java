@@ -31,7 +31,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtEmail, txtRole;
-        ImageButton btnEdit, btnDelete, btnChangeRole;
+        ImageButton btnDelete, btnChangeRole;
 
         public UserViewHolder(View itemView) {
             super(itemView);
