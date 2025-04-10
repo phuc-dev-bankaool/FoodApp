@@ -7,19 +7,27 @@ public class Food {
     private float price;
     private boolean status;
 
+    private String imageUri;
 
-    public Food(int id, String name,  String description, float price, boolean status) {
+    public Food(int id, String name, String description, float price, boolean status, String imageUri) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.status = status;
+        this.imageUri = imageUri;
     }
 
     public int getId() {
         return id;
     }
+    public String getImageUri() {
+        return imageUri;
+    }
 
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
     public void setId(int id) {
         this.id = id;
     }

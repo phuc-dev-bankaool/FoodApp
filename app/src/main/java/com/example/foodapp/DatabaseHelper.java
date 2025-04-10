@@ -46,7 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_FOODS + " (" +
                     COLUMN_FOOD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_FOOD_NAME + " TEXT, " +
-                    COLUMN_FOOD_IMAGE + " INTEGER, " +
+                    COLUMN_FOOD_IMAGE + " TEXT, " +
                     COLUMN_FOOD_DESCRIPTION + " TEXT, " +
                     COLUMN_FOOD_PRICE + " REAL, " +
                     COLUMN_FOOD_STATUS + " INTEGER" +
@@ -194,6 +194,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long addFood(Food food) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COLUMN_FOOD_IMAGE, food.getImageUri());
         values.put(COLUMN_FOOD_NAME, food.getName());
         values.put(COLUMN_FOOD_DESCRIPTION, food.getDescription());
         values.put(COLUMN_FOOD_PRICE, food.getPrice());
@@ -217,7 +218,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FOOD_DESCRIPTION));
                 float price = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_FOOD_PRICE));
                 boolean status = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FOOD_STATUS)) == 1;
-                foodList.add(new Food(id, name, description, price, status));
+                String imageUri = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FOOD_IMAGE));
+                foodList.add(new Food(id, name, description, price, status, imageUri));
             } while (cursor.moveToNext());
         }
 

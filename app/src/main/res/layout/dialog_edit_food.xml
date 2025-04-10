@@ -1,25 +1,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <ImageButton
+        android:id="@+id/editFoodImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_food_image"
+        android:contentDescription="Select Food Image" />
 
     <EditText
         android:id="@+id/editFoodName"
-        android:hint="Food name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:hint="Tên món ăn"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textSize="16sp"/>
 
     <EditText
         android:id="@+id/editFoodDescription"
-        android:hint="Description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:hint="Mô tả"
+        android:inputType="textMultiLine"
+        android:minLines="2"
+        android:padding="12dp"
+        android:textSize="16sp"
+        />
 
     <EditText
         android:id="@+id/editFoodPrice"
-        android:hint="Price"
-        android:inputType="numberDecimal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="Giá"
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
 </LinearLayout>

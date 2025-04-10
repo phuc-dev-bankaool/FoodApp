@@ -2,6 +2,7 @@ package com.example.foodapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
+            foodImageView = itemView.findViewById(R.id.imageFood);
             nameTextView = itemView.findViewById(R.id.textFoodName);
             descriptionTextView = itemView.findViewById(R.id.textFoodDescription);
             priceTextView = itemView.findViewById(R.id.textFoodPrice);
@@ -66,6 +68,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.nameTextView.setText(food.getName());
         holder.descriptionTextView.setText(food.getDescription());
         holder.priceTextView.setText(String.format("%.0f VNĐ", food.getPrice()));
+
+        String imageUri = food.getImageUri();
+        if (imageUri != null && !imageUri.isEmpty()) {
+            holder.foodImageView.setImageURI(Uri.parse(imageUri));
+        } else {
+            holder.foodImageView.setImageResource(R.drawable.default_food_image);
+        }
 
         if (listener != null) {
             holder.editButton.setVisibility(View.VISIBLE);
