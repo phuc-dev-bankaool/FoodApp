@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Tên món ăn"
+        android:hint="Food name"
         android:inputType="text"
         android:padding="12dp"
         android:textSize="16sp"/>
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:hint="Mô tả"
+        android:hint="Description"
         android:inputType="textMultiLine"
         android:minLines="2"
         android:padding="12dp"
@@ -40,7 +40,7 @@
         android:id="@+id/editFoodPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Giá"
+        android:hint="Price"
         android:inputType="numberDecimal"
         android:padding="12dp"
         android:textSize="16sp" />

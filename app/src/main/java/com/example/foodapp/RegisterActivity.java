@@ -14,7 +14,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
+
+    private EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText, adminCodeEditText;
     private Button registerButton;
     private TextView signInTextView;
     private DatabaseHelper db;
@@ -23,13 +24,14 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        // khởi tạo database helper
+
         db = new DatabaseHelper(this);
-        // khởi tạo các view trong layout
+
         nameEditText = findViewById(R.id.nameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
+        adminCodeEditText = findViewById(R.id.adminCodeEditText); // mới thêm
         registerButton = findViewById(R.id.registerButton);
         signInTextView = findViewById(R.id.loginTextView);
 
@@ -38,40 +40,38 @@ public class RegisterActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        // move to login page
-        signInTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
+
+        signInTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
-        //set up behavior for clicking register button
+
         registerButton.setOnClickListener(v -> registerUser());
     }
-    // check user by call addUser method in DatabaseHelper
+
     private void registerUser() {
         String name = nameEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
         String pwd = passwordEditText.getText().toString().trim();
         String confirmPwd = confirmPasswordEditText.getText().toString().trim();
+        String adminCode = adminCodeEditText.getText().toString().trim(); // mới thêm
 
-        if (name.isEmpty() || email.isEmpty() || pwd.isEmpty() || confirmPwd.isEmpty()){
+        if (name.isEmpty() || email.isEmpty() || pwd.isEmpty() || confirmPwd.isEmpty()) {
             Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!pwd.equals(confirmPwd)){
+
+        if (!pwd.equals(confirmPwd)) {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
-        };
+        }
 
-        boolean isAdded = db.addUser(name, email, pwd);
+        boolean isAdded = db.addUser(name, email, pwd, adminCode);
         if (isAdded) {
             Toast.makeText(this, "Register successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         } else {
-            Toast.makeText(this, "Email already exists", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Email already exists or registration failed", Toast.LENGTH_SHORT).show();
         }
     }
 }

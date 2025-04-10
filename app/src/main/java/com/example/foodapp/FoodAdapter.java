@@ -87,7 +87,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         Food food = foodList.get(position);
         holder.nameTextView.setText(food.getName());
         holder.descriptionTextView.setText(food.getDescription());
-        holder.priceTextView.setText(String.format("%.0f VNĐ", food.getPrice()));
+        holder.priceTextView.setText(String.format("%.0f $", food.getPrice()));
 
         String imageUri = food.getImageUri();
         if (imageUri != null && !imageUri.isEmpty()) {

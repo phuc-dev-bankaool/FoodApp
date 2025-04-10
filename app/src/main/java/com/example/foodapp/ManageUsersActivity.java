@@ -59,6 +59,8 @@ public class ManageUsersActivity extends AppCompatActivity {
                             if (success) {
                                 Toast.makeText(ManageUsersActivity.this, "Delete user successfully", Toast.LENGTH_SHORT).show();
                                 userList.remove(user);
+                                db.removeOrdersByUserId(user.getId());
+                                db.removeCartByUserId(user.getId());
                                 adapter.notifyDataSetChanged();
                             } else {
                                 Toast.makeText(ManageUsersActivity.this, "Delete user failed", Toast.LENGTH_SHORT).show();

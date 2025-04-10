@@ -1,12 +1,12 @@
 package com.example.foodapp;
 
 public class Cart {
-    private int id;
-    private int userId;
-    private int foodId;
-    private int quantity;
+    private int id;         // cart_id
+    private int userId;     // user_id
+    private Integer foodId;
+    private int quantity;   // quantity
 
-    public Cart(int id, int userId, int foodId, int quantity) {
+    public Cart(int id, int userId, Integer foodId, int quantity) {
         this.id = id;
         this.userId = userId;
         this.foodId = foodId;
@@ -29,14 +29,9 @@ public class Cart {
         this.userId = userId;
     }
 
-    public int getFoodId() {
-        return foodId;
-    }
+    public Integer getFoodId() { return foodId; }
 
-    public void setFoodId(int foodId) {
-        this.foodId = foodId;
-    }
-
+    public void setFoodId(Integer foodId) { this.foodId = foodId; }
     public int getQuantity() {
         return quantity;
     }

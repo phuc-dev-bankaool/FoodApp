@@ -7,15 +7,13 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
 public class UserHomeActivity extends AppCompatActivity {
-    private ImageButton logoutBtn, cartButton;
+    private ImageButton logoutBtn, cartButton, orderButton, foodButton;
     private RecyclerView foodRecyclerView;
     private FoodAdapter foodAdapter;
     private DatabaseHelper databaseHelper;
@@ -27,7 +25,7 @@ public class UserHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_user);
 
-        loggedInUser = (User) getIntent().getParcelableExtra("loggedInUser");
+        loggedInUser = getIntent().getParcelableExtra("loggedInUser");
         Log.d("UserHomeActivity", "Logged in user: " + loggedInUser);
         if (loggedInUser == null) {
             Intent intent = new Intent(UserHomeActivity.this, LoginActivity.class);
@@ -41,19 +39,33 @@ public class UserHomeActivity extends AppCompatActivity {
 
         logoutBtn = findViewById(R.id.logoutButton);
         cartButton = findViewById(R.id.cartButton);
+        orderButton = findViewById(R.id.orderButton);
+        foodButton = findViewById(R.id.foodButton);
 
         logoutBtn.setOnClickListener(v -> logoutUser());
         cartButton.setOnClickListener(v -> {
-            // TODO: Chuyển sang activity giỏ hàng (tạo sau nếu cần)
-            Toast.makeText(this, "Cart clicked (to be implemented)", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(UserHomeActivity.this, UserCartActivity.class);
+            intent.putExtra("loggedInUser", loggedInUser);
+            startActivity(intent);
+        });
+        orderButton.setOnClickListener(v -> {
+            Intent intent = new Intent(UserHomeActivity.this, UserOrderHistoryActivity.class);
+            intent.putExtra("loggedInUser", loggedInUser);
+            startActivity(intent);
+        });
+        foodButton.setOnClickListener(v -> {
+            loadFoodList();
         });
 
         foodRecyclerView = findViewById(R.id.foodRecyclerView);
         foodRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         databaseHelper = new DatabaseHelper(this);
-        List<Food> foodList = databaseHelper.getAllFoods();
+        loadFoodList();
+    }
 
+    private void loadFoodList() {
+        List<Food> foodList = databaseHelper.getAllFoods();
         foodAdapter = new FoodAdapter(this, foodList, new FoodAdapter.OnAddToCartListener() {
             @Override
             public void onAddToCart(Food food) {

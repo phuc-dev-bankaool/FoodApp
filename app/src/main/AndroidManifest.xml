@@ -26,6 +26,9 @@
         <activity android:name=".AdminHomeActivity"/>
         <activity android:name=".ManageUsersActivity"/>
         <activity android:name=".ManageProductsActivity"/>
+        <activity android:name=".UserCartActivity"/>
+        <activity android:name=".UserOrderActivity"/>
+        <activity android:name=".UserOrderHistoryActivity"/>
     </application>
 
 </manifest>

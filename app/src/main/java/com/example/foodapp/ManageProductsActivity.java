@@ -129,7 +129,6 @@ public class ManageProductsActivity extends AppCompatActivity {
 
     // Kiểm tra và yêu cầu quyền truy cập ảnh
     private void checkStoragePermission() {
-        // Với SDK 35 (Android 15), chỉ cần READ_MEDIA_IMAGES
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE_PERMISSION);
         }
@@ -282,17 +281,16 @@ public class ManageProductsActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pickImageFromGallery(); // Quyền được cấp, mở gallery ngay
+                pickImageFromGallery();
             } else {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)) {
-                    // Người dùng chọn "Don't ask again", hướng dẫn vào Settings
-                    Toast.makeText(this, "Vui lòng cấp quyền trong Cài đặt để chọn ảnh", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please enable permission from settings", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", getPackageName(), null);
                     intent.setData(uri);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(this, "Cần quyền truy cập để chọn ảnh", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Need permission to access gallery", Toast.LENGTH_SHORT).show();
                 }
             }
         }
