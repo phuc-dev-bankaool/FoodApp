@@ -26,7 +26,6 @@ public class UserHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_user);
 
         loggedInUser = getIntent().getParcelableExtra("loggedInUser");
-        Log.d("UserHomeActivity", "Logged in user: " + loggedInUser);
         if (loggedInUser == null) {
             Intent intent = new Intent(UserHomeActivity.this, LoginActivity.class);
             startActivity(intent);

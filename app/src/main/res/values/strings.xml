@@ -9,4 +9,6 @@
     <string name="admin">admin</string>
     <string name="manage_users_icon">Manage Users Icon</string>
     <string name="welcome_admin">Welcome, Admin</string>
+    <string name="emptyCart">Cart is empty</string>
+    <string name="empty_orders">Order is empty</string>
 </resources>

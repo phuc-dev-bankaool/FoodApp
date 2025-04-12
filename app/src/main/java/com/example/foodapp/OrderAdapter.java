@@ -11,11 +11,18 @@ import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
     private Context context;
-    private List<Order> orderList;
+    private List<Order> orders;
+    private DatabaseHelper databaseHelper;
 
-    public OrderAdapter(Context context, List<Order> orderList) {
+    public OrderAdapter(Context context, List<Order> orders) {
         this.context = context;
-        this.orderList = orderList;
+        this.orders = orders;
+        this.databaseHelper = new DatabaseHelper(context);
+    }
+
+    public void updateOrders(List<Order> newOrders) {
+        this.orders = newOrders;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -27,25 +34,45 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        Order order = orderList.get(position);
+        Order order = orders.get(position);
         holder.orderIdText.setText("Order ID: " + order.getId());
+        holder.userNameText.setText("User: " + databaseHelper.getUserNameById(order.getUserId()));
         holder.orderDateText.setText("Date: " + order.getOrderDate());
-        holder.orderTotalText.setText(String.format("Total: %.0f $", order.getTotal()));
+        holder.orderTotalText.setText("Total: " + String.format("%.2f $", order.getTotal()));
+
+        // Display order items
+        List<Cart> items = order.getItems();
+        if (items.isEmpty()) {
+            holder.orderItemsText.setText("Items: None");
+        } else {
+            StringBuilder itemsText = new StringBuilder("Items:\n");
+            for (Cart cart : items) {
+                Food food = databaseHelper.getFoodById(cart.getFoodId());
+                if (food != null) {
+                    itemsText.append("- ").append(food.getName()).append(" (x").append(cart.getQuantity()).append(")\n");
+                } else {
+                    itemsText.append("- Unknown Food (x").append(cart.getQuantity()).append(")\n");
+                }
+            }
+            holder.orderItemsText.setText(itemsText.toString());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        return orders.size();
     }
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView orderIdText, orderDateText, orderTotalText;
+        TextView orderIdText, userNameText, orderDateText, orderTotalText, orderItemsText;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             orderIdText = itemView.findViewById(R.id.orderIdText);
+            userNameText = itemView.findViewById(R.id.userNameText);
             orderDateText = itemView.findViewById(R.id.orderDateText);
             orderTotalText = itemView.findViewById(R.id.orderTotalText);
+            orderItemsText = itemView.findViewById(R.id.orderItemsText);
         }
     }
 }

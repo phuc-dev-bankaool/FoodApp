@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "FoodApp.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5; // Incremented for order_items table
 
     // Cột của bảng users
     private static final String TABLE_USERS = "users";
@@ -93,6 +93,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY(" + COLUMN_ORDER_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + ")" +
                     ")";
 
+    // Cột của bảng order_items
+    private static final String TABLE_ORDER_ITEMS = "order_items";
+    private static final String COLUMN_ORDER_ITEM_ID = "order_item_id";
+    private static final String COLUMN_ORDER_ITEM_ORDER_ID = "order_id";
+    private static final String COLUMN_ORDER_ITEM_FOOD_ID = "food_id";
+    private static final String COLUMN_ORDER_ITEM_QUANTITY = "quantity";
+
+    // Tạo bảng order_items
+    private static final String CREATE_TABLE_ORDER_ITEMS =
+            "CREATE TABLE " + TABLE_ORDER_ITEMS + " (" +
+                    COLUMN_ORDER_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_ORDER_ITEM_ORDER_ID + " INTEGER, " +
+                    COLUMN_ORDER_ITEM_FOOD_ID + " INTEGER, " +
+                    COLUMN_ORDER_ITEM_QUANTITY + " INTEGER, " +
+                    "FOREIGN KEY(" + COLUMN_ORDER_ITEM_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ORDER_ID + "), " +
+                    "FOREIGN KEY(" + COLUMN_ORDER_ITEM_FOOD_ID + ") REFERENCES " + TABLE_FOODS + "(" + COLUMN_FOOD_ID + ")" +
+                    ")";
+
     // Bảng Đánh giá (ratings)
     private static final String TABLE_RATINGS = "ratings";
     private static final String COLUMN_RATING_ID = "rating_id";
@@ -123,30 +141,140 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_FOODS);
         db.execSQL(CREATE_TABLE_CART);
         db.execSQL(CREATE_TABLE_ORDERS);
+        db.execSQL(CREATE_TABLE_ORDER_ITEMS);
         db.execSQL(CREATE_TABLE_RATINGS);
+        Log.d("DatabaseHelper", "Database created with all tables");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RATINGS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-        onCreate(db);
+        Log.d("DatabaseHelper", "Upgrading database from version " + oldVersion + " to " + newVersion);
+        try {
+            // Create tables if they don't exist
+            if (oldVersion < 6) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_USERS + " (" +
+                        COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_USER_NAME + " TEXT, " +
+                        COLUMN_USER_EMAIL + " TEXT UNIQUE, " +
+                        COLUMN_USER_PASSWORD + " TEXT, " +
+                        COLUMN_USER_ROLE + " TEXT" +
+                        ")");
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_FOODS + " (" +
+                        COLUMN_FOOD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_FOOD_NAME + " TEXT, " +
+                        COLUMN_FOOD_IMAGE + " TEXT, " +
+                        COLUMN_FOOD_DESCRIPTION + " TEXT, " +
+                        COLUMN_FOOD_PRICE + " REAL, " +
+                        COLUMN_FOOD_STATUS + " INTEGER" +
+                        ")");
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_CART + " (" +
+                        COLUMN_CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_CART_USER_ID + " INTEGER, " +
+                        COLUMN_CART_FOOD_ID + " INTEGER, " +
+                        COLUMN_CART_QUANTITY + " INTEGER, " +
+                        "FOREIGN KEY(" + COLUMN_CART_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "), " +
+                        "FOREIGN KEY(" + COLUMN_CART_FOOD_ID + ") REFERENCES " + TABLE_FOODS + "(" + COLUMN_FOOD_ID + ")" +
+                        ")");
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ORDERS + " (" +
+                        COLUMN_ORDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_ORDER_USER_ID + " INTEGER, " +
+                        COLUMN_ORDER_DATE + " TEXT, " +
+                        COLUMN_ORDER_TOTAL + " REAL, " +
+                        "FOREIGN KEY(" + COLUMN_ORDER_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + ")" +
+                        ")");
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ORDER_ITEMS + " (" +
+                        COLUMN_ORDER_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_ORDER_ITEM_ORDER_ID + " INTEGER, " +
+                        COLUMN_ORDER_ITEM_FOOD_ID + " INTEGER, " +
+                        COLUMN_ORDER_ITEM_QUANTITY + " INTEGER, " +
+                        "FOREIGN KEY(" + COLUMN_ORDER_ITEM_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ORDER_ID + "), " +
+                        "FOREIGN KEY(" + COLUMN_ORDER_ITEM_FOOD_ID + ") REFERENCES " + TABLE_FOODS + "(" + COLUMN_FOOD_ID + ")" +
+                        ")");
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_RATINGS + " (" +
+                        COLUMN_RATING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COLUMN_RATING_USER_ID + " INTEGER, " +
+                        COLUMN_RATING_FOOD_ID + " INTEGER, " +
+                        COLUMN_RATING_SCORE + " INTEGER, " +
+                        COLUMN_RATING_COMMENT + " TEXT, " +
+                        "FOREIGN KEY(" + COLUMN_RATING_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "), " +
+                        "FOREIGN KEY(" + COLUMN_RATING_FOOD_ID + ") REFERENCES " + TABLE_FOODS + "(" + COLUMN_FOOD_ID + ")" +
+                        ")");
+            }
+            Log.d("DatabaseHelper", "Database upgraded successfully to version " + newVersion);
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error upgrading database: " + e.getMessage());
+        }
+    }
+
+    public void ensureTables() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_USERS + " (" +
+                    COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_USER_NAME + " TEXT, " +
+                    COLUMN_USER_EMAIL + " TEXT UNIQUE, " +
+                    COLUMN_USER_PASSWORD + " TEXT, " +
+                    COLUMN_USER_ROLE + " TEXT" +
+                    ")");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_FOODS + " (" +
+                    COLUMN_FOOD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_FOOD_NAME + " TEXT, " +
+                    COLUMN_FOOD_IMAGE + " TEXT, " +
+                    COLUMN_FOOD_DESCRIPTION + " TEXT, " +
+                    COLUMN_FOOD_PRICE + " REAL, " +
+                    COLUMN_FOOD_STATUS + " INTEGER" +
+                    ")");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_CART + " (" +
+                    COLUMN_CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_CART_USER_ID + " INTEGER, " +
+                    COLUMN_CART_FOOD_ID + " INTEGER, " +
+                    COLUMN_CART_QUANTITY + " INTEGER, " +
+                    "FOREIGN KEY(" + COLUMN_CART_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "), " +
+                    "FOREIGN KEY(" + COLUMN_CART_FOOD_ID + ") REFERENCES " + TABLE_FOODS + "(" + COLUMN_FOOD_ID + ")" +
+                    ")");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ORDERS + " (" +
+                    COLUMN_ORDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_ORDER_USER_ID + " INTEGER, " +
+                    COLUMN_ORDER_DATE + " TEXT, " +
+                    COLUMN_ORDER_TOTAL + " REAL, " +
+                    "FOREIGN KEY(" + COLUMN_ORDER_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + ")" +
+                    ")");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ORDER_ITEMS + " (" +
+                    COLUMN_ORDER_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_ORDER_ITEM_ORDER_ID + " INTEGER, " +
+                    COLUMN_ORDER_ITEM_FOOD_ID + " INTEGER, " +
+                    COLUMN_ORDER_ITEM_QUANTITY + " INTEGER, " +
+                    "FOREIGN KEY(" + COLUMN_ORDER_ITEM_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ORDER_ID + "), " +
+                    "FOREIGN KEY(" + COLUMN_ORDER_ITEM_FOOD_ID + ") REFERENCES " + TABLE_FOODS + "(" + COLUMN_FOOD_ID + ")" +
+                    ")");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_RATINGS + " (" +
+                    COLUMN_RATING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_RATING_USER_ID + " INTEGER, " +
+                    COLUMN_RATING_FOOD_ID + " INTEGER, " +
+                    COLUMN_RATING_SCORE + " INTEGER, " +
+                    COLUMN_RATING_COMMENT + " TEXT, " +
+                    "FOREIGN KEY(" + COLUMN_RATING_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "), " +
+                    "FOREIGN KEY(" + COLUMN_RATING_FOOD_ID + ") REFERENCES " + TABLE_FOODS + "(" + COLUMN_FOOD_ID + ")" +
+                    ")");
+            Log.d("DatabaseHelper", "All tables ensured");
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error ensuring tables: " + e.getMessage());
+        } finally {
+            db.close();
+        }
     }
 
     public void clearDatabase() {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_RATINGS);
-
-            // Tạo lại các bảng sau khi xóa
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             onCreate(db);
+            Log.d("DatabaseHelper", "Database cleared and recreated");
         } catch (Exception e) {
             Log.e("DatabaseHelper", "Error clearing database: " + e.getMessage());
         } finally {
@@ -162,14 +290,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean removeOrdersByUserId(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
         try {
+            // Delete order items first due to foreign key constraints
+            db.delete(TABLE_ORDER_ITEMS, COLUMN_ORDER_ITEM_ORDER_ID + " IN (SELECT " + COLUMN_ORDER_ID + " FROM " + TABLE_ORDERS + " WHERE " + COLUMN_ORDER_USER_ID + "=?)", new String[]{String.valueOf(userId)});
             int rows = db.delete(TABLE_ORDERS, COLUMN_ORDER_USER_ID + "=?", new String[]{String.valueOf(userId)});
-            Log.d("DatabaseHelper", "Deleted " + rows + " cart records for userId=" + userId);
+            db.setTransactionSuccessful();
+            Log.d("DatabaseHelper", "Deleted " + rows + " orders for userId=" + userId);
             return rows > 0;
         } catch (Exception e) {
-            Log.e("DatabaseHelper", "Error removing cart by userId: " + e.getMessage());
+            Log.e("DatabaseHelper", "Error removing orders by userId: " + e.getMessage());
             return false;
         } finally {
+            db.endTransaction();
             db.close();
         }
     }
@@ -193,7 +326,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
-            // 1. Check email đã tồn tại
             Cursor cursor = db.query(TABLE_USERS,
                     new String[]{COLUMN_USER_ID},
                     COLUMN_USER_EMAIL + "=?",
@@ -206,10 +338,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             cursor.close();
 
-            // 2. Logic phân quyền "đặc biệt"
             final String ADMIN_SECRET_CODE = "#ADMIN2024!";
             final Set<String> WHITELISTED_ADMIN_EMAILS = new HashSet<>(Arrays.asList(
-                    "admin@bankapp.com", "boss@company.vn"
+                    "admin@gmail.com", "boss@company.vn"
             ));
 
             String role;
@@ -219,7 +350,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 role = "user";
             }
 
-            // 3. Insert user
             ContentValues userValues = new ContentValues();
             userValues.put(COLUMN_USER_NAME, name);
             userValues.put(COLUMN_USER_EMAIL, email);
@@ -230,28 +360,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (userId == -1) {
                 db.endTransaction();
                 return false;
-            }
-
-            if (!role.equals("admin")) {
-                ContentValues cartValues = new ContentValues();
-                cartValues.put(COLUMN_CART_USER_ID, userId);
-                cartValues.putNull(COLUMN_CART_FOOD_ID);
-                cartValues.put(COLUMN_CART_QUANTITY, 0);
-                long cartResult = db.insert(TABLE_CART, null, cartValues);
-                if (cartResult == -1) {
-                    db.endTransaction();
-                    return false;
-                }
-
-                ContentValues orderValues = new ContentValues();
-                orderValues.put(COLUMN_ORDER_USER_ID, userId);
-                orderValues.put(COLUMN_ORDER_DATE, getCurrentDate());
-                orderValues.put(COLUMN_ORDER_TOTAL, 0.0);
-                long orderResult = db.insert(TABLE_ORDERS, null, orderValues);
-                if (orderResult == -1) {
-                    db.endTransaction();
-                    return false;
-                }
             }
 
             db.setTransactionSuccessful();
@@ -328,7 +436,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int foodId = cursor.isNull(cursor.getColumnIndexOrThrow(COLUMN_CART_FOOD_ID))
                         ? -1 : cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CART_FOOD_ID));
                 int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CART_QUANTITY));
-                cartList.add(new Cart(id, userId, foodId, quantity));
+                if (foodId != -1 && quantity > 0) { // Skip invalid entries
+                    cartList.add(new Cart(id, userId, foodId, quantity));
+                }
             } while (cursor.moveToNext());
         }
 
@@ -379,7 +489,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result > 0;
     }
 
-    // Xóa toàn bộ giỏ hàng của user
     public boolean clearCart(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(TABLE_CART, COLUMN_CART_USER_ID + "=?", new String[]{String.valueOf(userId)});
@@ -388,17 +497,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result > 0;
     }
 
-    // Đặt hàng
-    public boolean placeOrder(int userId, String orderDate, float total) {
+    public boolean placeOrder(int userId, String orderDate, float total, List<Cart> cartItems) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_ORDER_USER_ID, userId);
-        values.put(COLUMN_ORDER_DATE, orderDate);
-        values.put(COLUMN_ORDER_TOTAL, total);
-        long result = db.insert(TABLE_ORDERS, null, values);
-        db.close();
-        Log.d("DatabaseHelper", "Order placed: userId=" + userId + ", total=" + total);
-        return result != -1;
+        db.beginTransaction();
+        try {
+            ContentValues orderValues = new ContentValues();
+            orderValues.put(COLUMN_ORDER_USER_ID, userId);
+            orderValues.put(COLUMN_ORDER_DATE, orderDate);
+            orderValues.put(COLUMN_ORDER_TOTAL, total);
+            long orderId = db.insertOrThrow(TABLE_ORDERS, null, orderValues);
+            if (orderId == -1) {
+                return false;
+            }
+
+            // Insert order items
+            for (Cart cart : cartItems) {
+                if (cart.getFoodId() != null && cart.getFoodId() != -1 && cart.getQuantity() > 0) {
+                    ContentValues itemValues = new ContentValues();
+                    itemValues.put(COLUMN_ORDER_ITEM_ORDER_ID, orderId);
+                    itemValues.put(COLUMN_ORDER_ITEM_FOOD_ID, cart.getFoodId());
+                    itemValues.put(COLUMN_ORDER_ITEM_QUANTITY, cart.getQuantity());
+                    long itemResult = db.insertOrThrow(TABLE_ORDER_ITEMS, null, itemValues);
+                    if (itemResult == -1) {
+                        return false;
+                    }
+                }
+            }
+
+            db.setTransactionSuccessful();
+            Log.d("DatabaseHelper", "Order placed: orderId=" + orderId + ", userId=" + userId + ", total=" + total);
+            return true;
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error placing order: " + e.getMessage());
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
     }
 
     // Lấy danh sách đơn hàng của user
@@ -416,13 +551,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_ID));
                 String orderDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ORDER_DATE));
                 float total = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_ORDER_TOTAL));
-                orderList.add(new Order(id, userId, orderDate, total));
+                List<Cart> orderItems = getOrderItems(id);
+                Order order = new Order(id, userId, orderDate, total);
+                order.setItems(orderItems);
+                orderList.add(order);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         db.close();
         return orderList;
+    }
+
+    // Lấy danh sách món ăn trong đơn hàng
+    private List<Cart> getOrderItems(int orderId) {
+        List<Cart> items = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ORDER_ITEMS,
+                new String[]{COLUMN_ORDER_ITEM_FOOD_ID, COLUMN_ORDER_ITEM_QUANTITY},
+                COLUMN_ORDER_ITEM_ORDER_ID + "=?",
+                new String[]{String.valueOf(orderId)},
+                null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int foodId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_ITEM_FOOD_ID));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_ITEM_QUANTITY));
+                // Use -1 for cartId and userId as placeholders
+                items.add(new Cart(-1, -1, foodId, quantity));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return items;
     }
 
     public List<User> getAllUsers() {
@@ -448,16 +610,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean deleteUser(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete(TABLE_USERS, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
-        db.close();
-        return result > 0;
+        db.beginTransaction();
+        try {
+            // Delete related order_items first
+            db.delete(TABLE_ORDER_ITEMS, COLUMN_ORDER_ITEM_ORDER_ID + " IN (SELECT " + COLUMN_ORDER_ID + " FROM " + TABLE_ORDERS + " WHERE " + COLUMN_ORDER_USER_ID + "=?)", new String[]{String.valueOf(userId)});
+            // Delete orders
+            db.delete(TABLE_ORDERS, COLUMN_ORDER_USER_ID + "=?", new String[]{String.valueOf(userId)});
+            // Delete cart
+            db.delete(TABLE_CART, COLUMN_CART_USER_ID + "=?", new String[]{String.valueOf(userId)});
+            // Delete ratings
+            db.delete(TABLE_RATINGS, COLUMN_RATING_USER_ID + "=?", new String[]{String.valueOf(userId)});
+            // Delete user
+            int result = db.delete(TABLE_USERS, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+            db.setTransactionSuccessful();
+            return result > 0;
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error deleting user: " + e.getMessage());
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
     }
 
     public boolean deleteFood(int foodId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete(TABLE_FOODS, COLUMN_FOOD_ID + "=?", new String[]{String.valueOf(foodId)});
-        db.close();
-        return result > 0;
+        db.beginTransaction();
+        try {
+            // Delete related order_items
+            db.delete(TABLE_ORDER_ITEMS, COLUMN_ORDER_ITEM_FOOD_ID + "=?", new String[]{String.valueOf(foodId)});
+            // Delete cart items
+            db.delete(TABLE_CART, COLUMN_CART_FOOD_ID + "=?", new String[]{String.valueOf(foodId)});
+            // Delete ratings
+            db.delete(TABLE_RATINGS, COLUMN_RATING_FOOD_ID + "=?", new String[]{String.valueOf(foodId)});
+            // Delete food
+            int result = db.delete(TABLE_FOODS, COLUMN_FOOD_ID + "=?", new String[]{String.valueOf(foodId)});
+            db.setTransactionSuccessful();
+            return result > 0;
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "Error deleting food: " + e.getMessage());
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
     }
 
     public void updateUserRole(User user) {
@@ -505,8 +701,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 orderCursor.close();
             } else if (newRole.equals("admin")) {
-                db.delete(TABLE_CART, COLUMN_CART_USER_ID + "=?", new String[]{String.valueOf(userId)});
+                db.delete(TABLE_ORDER_ITEMS, COLUMN_ORDER_ITEM_ORDER_ID + " IN (SELECT " + COLUMN_ORDER_ID + " FROM " + TABLE_ORDERS + " WHERE " + COLUMN_ORDER_USER_ID + "=?)", new String[]{String.valueOf(userId)});
                 db.delete(TABLE_ORDERS, COLUMN_ORDER_USER_ID + "=?", new String[]{String.valueOf(userId)});
+                db.delete(TABLE_CART, COLUMN_CART_USER_ID + "=?", new String[]{String.valueOf(userId)});
             }
 
             db.setTransactionSuccessful();
@@ -587,7 +784,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return rows > 0;
     }
+    public String getUserNameById(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS,
+                new String[]{COLUMN_USER_NAME},
+                COLUMN_USER_ID + "=?",
+                new String[]{String.valueOf(userId)},
+                null, null, null);
 
+        String userName = "Unknown User";
+        if (cursor.moveToFirst()) {
+            userName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_NAME));
+        }
+
+        cursor.close();
+        db.close();
+        return userName;
+    }
+    public List<Order> getAllOrders() {
+        List<Order> orderList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ORDERS,
+                new String[]{COLUMN_ORDER_ID, COLUMN_ORDER_USER_ID, COLUMN_ORDER_DATE, COLUMN_ORDER_TOTAL},
+                null, null, null, null, COLUMN_ORDER_DATE + " DESC");
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_ID));
+                int userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORDER_USER_ID));
+                String orderDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ORDER_DATE));
+                float total = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_ORDER_TOTAL));
+                List<Cart> orderItems = getOrderItems(id);
+                Order order = new Order(id, userId, orderDate, total);
+                order.setItems(orderItems);
+                orderList.add(order);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return orderList;
+    }
     public boolean addRating(int userId, int foodId, int score, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -599,5 +836,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
-
 }

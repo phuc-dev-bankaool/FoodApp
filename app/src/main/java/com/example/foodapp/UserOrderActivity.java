@@ -30,12 +30,10 @@ public class UserOrderActivity extends AppCompatActivity {
         orderTotalText = findViewById(R.id.orderTotalText);
         backToHomeButton = findViewById(R.id.backToHomeButton);
 
-        // Hiển thị thông tin đơn hàng
         orderIdText.setText("Order ID: " + order.getId());
         orderDateText.setText("Date: " + order.getOrderDate());
         orderTotalText.setText(String.format("Total: %.0f $", order.getTotal()));
 
-        // Nút quay lại UserHomeActivity
         backToHomeButton.setOnClickListener(v -> {
             Intent intent = new Intent(UserOrderActivity.this, UserHomeActivity.class);
             intent.putExtra("loggedInUser", loggedInUser);

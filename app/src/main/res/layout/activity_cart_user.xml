@@ -23,10 +23,39 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/cartTitle"
         app:layout_constraintBottom_toTopOf="@id/totalLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Empty State View -->
+    <LinearLayout
+        android:id="@+id/emptyCartView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/cartTitle"
+        app:layout_constraintBottom_toTopOf="@id/totalLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:contentDescription="@string/emptyCart"
+            android:src="@drawable/ic_empty_cart" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Your cart is empty"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/totalLayout"
@@ -55,7 +84,8 @@
             android:text="Proceed to Order"
             android:textSize="16sp"
             android:backgroundTint="@color/black"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:enabled="false" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

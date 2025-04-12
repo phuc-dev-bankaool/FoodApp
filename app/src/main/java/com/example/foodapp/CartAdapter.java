@@ -1,6 +1,7 @@
 package com.example.foodapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,36 +44,32 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
         if (food != null) {
             holder.cartFoodName.setText(food.getName());
-            holder.cartFoodPrice.setText(String.format(Locale.getDefault(), "%.0f đ", food.getPrice() * item.getQuantity()));
+            holder.cartFoodPrice.setText(String.format(Locale.getDefault(), "%.2f $", food.getPrice() * item.getQuantity()));
             if (food.getImageUri() != null && !food.getImageUri().isEmpty()) {
-                holder.cartFoodImage.setImageURI(android.net.Uri.parse(food.getImageUri()));
+                holder.cartFoodImage.setImageURI(Uri.parse(food.getImageUri()));
             } else {
                 holder.cartFoodImage.setImageResource(R.drawable.default_food_image);
             }
         } else {
             holder.cartFoodName.setText("Unknown Food");
-            holder.cartFoodPrice.setText("0 đ");
+            holder.cartFoodPrice.setText("0 $");
         }
 
         holder.cartQuantity.setText(String.valueOf(item.getQuantity()));
 
-        holder.buttonIncrease.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onIncreaseQuantity(item);
-            }
-        });
-
-        holder.buttonDecrease.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onDecreaseQuantity(item);
-            }
-        });
-
-        holder.buttonRemove.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onRemoveFromCart(item);
-            }
-        });
+        // Disable buttons if listener is null (for dialog)
+        if (listener == null) {
+            holder.buttonIncrease.setVisibility(View.GONE);
+            holder.buttonDecrease.setVisibility(View.GONE);
+            holder.buttonRemove.setVisibility(View.GONE);
+        } else {
+            holder.buttonIncrease.setVisibility(View.VISIBLE);
+            holder.buttonDecrease.setVisibility(View.VISIBLE);
+            holder.buttonRemove.setVisibility(View.VISIBLE);
+            holder.buttonIncrease.setOnClickListener(v -> listener.onIncreaseQuantity(item));
+            holder.buttonDecrease.setOnClickListener(v -> listener.onDecreaseQuantity(item));
+            holder.buttonRemove.setOnClickListener(v -> listener.onRemoveFromCart(item));
+        }
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.example.foodapp;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +20,6 @@ public class UserCartActivity extends AppCompatActivity {
     private Button proceedToOrderButton;
     private DatabaseHelper databaseHelper;
     private User loggedInUser;
-    private Order latestOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,16 @@ public class UserCartActivity extends AppCompatActivity {
         });
         cartRecyclerView.setAdapter(cartAdapter);
         updateTotalPrice(cartList);
+
+        if (cartList.isEmpty()) {
+            cartRecyclerView.setVisibility(View.GONE);
+            findViewById(R.id.emptyCartView).setVisibility(View.VISIBLE);
+            proceedToOrderButton.setEnabled(false);
+        } else {
+            cartRecyclerView.setVisibility(View.VISIBLE);
+            findViewById(R.id.emptyCartView).setVisibility(View.GONE);
+            proceedToOrderButton.setEnabled(true);
+        }
     }
 
     private void decreaseQuantity(Cart cart) {
@@ -79,14 +90,21 @@ public class UserCartActivity extends AppCompatActivity {
     }
 
     private void updateTotalPrice(List<Cart> cartList) {
+        float total = calculateCartTotal(cartList);
+        cartTotalText.setText(String.format("Total: %.2f $", total));
+    }
+
+    private float calculateCartTotal(List<Cart> cartList) {
         float total = 0;
         for (Cart cart : cartList) {
-            Food food = databaseHelper.getFoodById(cart.getFoodId());
-            if (food != null) {
-                total += food.getPrice() * cart.getQuantity();
+            if (cart.getFoodId() != null && cart.getFoodId() != -1) {
+                Food food = databaseHelper.getFoodById(cart.getFoodId());
+                if (food != null) {
+                    total += food.getPrice() * cart.getQuantity();
+                }
             }
         }
-        cartTotalText.setText(String.format("Total: %.0f $", total));
+        return total;
     }
 
     private void proceedToOrder() {
@@ -96,33 +114,55 @@ public class UserCartActivity extends AppCompatActivity {
             return;
         }
 
-        String totalText = cartTotalText.getText().toString().replace("Total: ", "").replace(" $", "");
-        float total = Float.parseFloat(totalText);
+        float total = calculateCartTotal(cartList);
 
-        new AlertDialog.Builder(this)
-                .setTitle("Confirm Order")
-                .setMessage("Are you sure you want to place this order?\nTotal: " + totalText + " $")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    String orderDate = databaseHelper.getCurrentDate();
-                    boolean success = databaseHelper.placeOrder(loggedInUser.getId(), orderDate, total);
-                    if (success) {
-                        databaseHelper.clearCart(loggedInUser.getId());
-                        Toast.makeText(this, "Order placed successfully", Toast.LENGTH_SHORT).show();
+        // Create custom dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm Order");
 
-                        List<Order> orders = databaseHelper.getUserOrders(loggedInUser.getId());
-                        Order latestOrder = orders.get(orders.size() - 1);
+        // Inflate custom layout
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_confirm_order, null);
+        builder.setView(dialogView);
 
-                        Intent intent = new Intent(UserCartActivity.this, UserOrderActivity.class);
-                        intent.putExtra("loggedInUser", loggedInUser);
-                        intent.putExtra("order", latestOrder);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Failed to place order", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                .setCancelable(false)
-                .show();
+        // Setup RecyclerView in dialog
+        RecyclerView dialogCartRecyclerView = dialogView.findViewById(R.id.dialogCartRecyclerView);
+        dialogCartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CartAdapter dialogCartAdapter = new CartAdapter(this, cartList, null);
+        dialogCartRecyclerView.setAdapter(dialogCartAdapter);
+
+        // Set total in dialog
+        TextView dialogTotalText = dialogView.findViewById(R.id.dialogTotalText);
+        dialogTotalText.setText(String.format("Total: %.2f $", total));
+
+        // Set buttons
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            String orderDate = databaseHelper.getCurrentDate();
+            boolean success = databaseHelper.placeOrder(loggedInUser.getId(), orderDate, total, cartList);
+            if (success) {
+                databaseHelper.clearCart(loggedInUser.getId());
+                Toast.makeText(this, "Order placed successfully", Toast.LENGTH_SHORT).show();
+
+                List<Order> orders = databaseHelper.getUserOrders(loggedInUser.getId());
+                if (!orders.isEmpty()) {
+                    Order latestOrder = orders.get(orders.size() - 1);
+                    Intent intent = new Intent(this, UserOrderActivity.class);
+                    intent.putExtra("loggedInUser", loggedInUser);
+                    intent.putExtra("order", latestOrder);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Order placed, but no orders found", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, UserHomeActivity.class);
+                    intent.putExtra("loggedInUser", loggedInUser);
+                    startActivity(intent);
+                    finish();
+                }
+            } else {
+                Toast.makeText(this, "Failed to place order", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+        builder.setCancelable(false);
+        builder.show();
     }
 }

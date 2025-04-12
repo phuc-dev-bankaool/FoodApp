@@ -73,6 +73,8 @@ public class ManageUsersActivity extends AppCompatActivity {
             public void onChangeRole(User user) {
                 if (user.getRole().equals("user")) {
                     user.setRole("admin");
+                    db.removeOrdersByUserId(user.getId());
+                    db.removeCartByUserId(user.getId());
                 } else {
                     user.setRole("user");
                 }

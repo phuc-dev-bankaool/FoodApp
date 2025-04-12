@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
-        adminCodeEditText = findViewById(R.id.adminCodeEditText); // mới thêm
+        adminCodeEditText = findViewById(R.id.adminCodeEditText);
         registerButton = findViewById(R.id.registerButton);
         signInTextView = findViewById(R.id.loginTextView);
 

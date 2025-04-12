@@ -24,9 +24,19 @@
             android:textColor="@color/black" />
 
         <TextView
+            android:id="@+id/userNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="User: "
+            android:textSize="14sp"
+            android:textColor="@color/black" />
+
+        <TextView
             android:id="@+id/orderDateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Date: "
             android:textSize="14sp"
             android:textColor="@color/black" />
@@ -35,7 +45,17 @@
             android:id="@+id/orderTotalText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Total: 0 $"
+            android:textSize="14sp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/orderItemsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Items: None"
             android:textSize="14sp"
             android:textColor="@color/black" />
     </LinearLayout>

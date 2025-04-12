@@ -63,7 +63,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         manageOrdersCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AdminHomeActivity.this, ManageUsersActivity.class);
+                Intent intent = new Intent(AdminHomeActivity.this, ManageOrdersActivity.class);
                 intent.putExtra("loggedInAdmin", loggedAdmin);
                 startActivity(intent);
                 finish();

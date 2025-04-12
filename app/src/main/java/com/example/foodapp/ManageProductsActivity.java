@@ -127,7 +127,6 @@ public class ManageProductsActivity extends AppCompatActivity {
         addButton.setOnClickListener(v -> showAddDialog());
     }
 
-    // Kiểm tra và yêu cầu quyền truy cập ảnh
     private void checkStoragePermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE_PERMISSION);
@@ -183,7 +182,6 @@ public class ManageProductsActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Hiển thị dialog chỉnh sửa món ăn
     @SuppressLint("NotifyDataSetChanged")
     private void showEditDialog(Food food) {
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_food, null);
