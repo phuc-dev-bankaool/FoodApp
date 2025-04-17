@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
-    private Context context;
+    private final Context context;
     private List<Order> orders;
-    private DatabaseHelper databaseHelper;
+    private final DatabaseHelper databaseHelper;
 
     public OrderAdapter(Context context, List<Order> orders) {
         this.context = context;

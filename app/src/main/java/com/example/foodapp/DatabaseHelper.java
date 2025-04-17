@@ -271,7 +271,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
+//            db.execSQL("DROP TABLE IF EXISTS " + TABLE_FOODS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             onCreate(db);
             Log.d("DatabaseHelper", "Database cleared and recreated");
@@ -324,31 +324,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Thêm user
     public boolean addUser(String name, String email, String password, String adminCodeInput) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
+        boolean success = false;
+        boolean transactionStarted = false;
+
         try {
+            // Kiểm tra email đã tồn tại chưa
             Cursor cursor = db.query(TABLE_USERS,
                     new String[]{COLUMN_USER_ID},
                     COLUMN_USER_EMAIL + "=?",
                     new String[]{email},
                     null, null, null);
+
             if (cursor.getCount() > 0) {
                 cursor.close();
-                db.endTransaction();
-                return false;
+                return false; // Email đã tồn tại
             }
             cursor.close();
+
+            db.beginTransaction();
+            transactionStarted = true;
 
             final String ADMIN_SECRET_CODE = "#ADMIN2024!";
             final Set<String> WHITELISTED_ADMIN_EMAILS = new HashSet<>(Arrays.asList(
                     "admin@gmail.com", "boss@company.vn"
             ));
 
-            String role;
-            if (WHITELISTED_ADMIN_EMAILS.contains(email) && ADMIN_SECRET_CODE.equals(adminCodeInput)) {
-                role = "admin";
-            } else {
-                role = "user";
-            }
+            String role = (WHITELISTED_ADMIN_EMAILS.contains(email) && ADMIN_SECRET_CODE.equals(adminCodeInput))
+                    ? "admin" : "user";
 
             ContentValues userValues = new ContentValues();
             userValues.put(COLUMN_USER_NAME, name);
@@ -357,21 +359,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             userValues.put(COLUMN_USER_ROLE, role);
 
             long userId = db.insertOrThrow(TABLE_USERS, null, userValues);
-            if (userId == -1) {
-                db.endTransaction();
-                return false;
+            if (userId != -1) {
+                db.setTransactionSuccessful();
+                success = true;
+                Log.d("DatabaseHelper", "User " + name + " (" + role + ") registered successfully.");
             }
 
-            db.setTransactionSuccessful();
-            Log.d("DatabaseHelper", "User " + name + " (" + role + ") registered successfully.");
-            return true;
         } catch (Exception e) {
             Log.e("DatabaseHelper", "Error adding user: " + e.getMessage());
-            return false;
         } finally {
-            db.endTransaction();
+            if (transactionStarted) {
+                db.endTransaction(); // Chỉ gọi nếu đã bắt đầu transaction
+            }
             db.close();
         }
+
+        return success;
     }
 
     public boolean addToCart(int userId, int foodId, int quantity) {
@@ -784,6 +787,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return rows > 0;
     }
+
     public String getUserNameById(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS,
@@ -801,6 +805,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return userName;
     }
+
     public List<Order> getAllOrders() {
         List<Order> orderList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -825,6 +830,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return orderList;
     }
+
     public boolean addRating(int userId, int foodId, int score, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

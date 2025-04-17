@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Order implements Parcelable {
-    private int id;
-    private int userId;
-    private String orderDate;
-    private float total;
+    private final int id;
+    private final int userId;
+    private final String orderDate;
+    private final float total;
     private List<Cart> items;
 
     public Order(int id, int userId, String orderDate, float total) {

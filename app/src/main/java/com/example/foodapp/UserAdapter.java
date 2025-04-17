@@ -14,9 +14,9 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<User> userList;
-    private OnUserActionListener listener;
+    private final OnUserActionListener listener;
 
     public interface OnUserActionListener {
         void onDelete(User user);

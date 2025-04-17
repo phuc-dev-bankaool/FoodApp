@@ -19,7 +19,7 @@ public class AdminHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_admin);
-        loggedAdmin = (User) getIntent().getParcelableExtra("loggedInAdmin");
+        loggedAdmin = getIntent().getParcelableExtra("loggedInAdmin");
         Log.d("DEBUG", "loggedAdmin: " + loggedAdmin);
         if (loggedAdmin == null) {
             // Xử lý trường hợp người dùng chưa đăng nhập

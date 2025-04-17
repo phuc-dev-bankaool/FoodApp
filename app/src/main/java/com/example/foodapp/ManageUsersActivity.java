@@ -36,7 +36,7 @@ public class ManageUsersActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
         recyclerView = findViewById(R.id.recyclerViewUsers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        loggedAdmin = (User) getIntent().getParcelableExtra("loggedInAdmin");
+        loggedAdmin = getIntent().getParcelableExtra("loggedInAdmin");
         if (loggedAdmin == null) {
             Intent intent = new Intent(ManageUsersActivity.this, LoginActivity.class);
             startActivity(intent);

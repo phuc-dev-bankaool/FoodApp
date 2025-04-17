@@ -59,7 +59,7 @@ public class ManageProductsActivity extends AppCompatActivity {
         foodList = db.getAllFoods();
         logoutBtn = findViewById(R.id.logoutButton);
         addButton = findViewById(R.id.buttonAddFood);
-        loggedAdmin = (User) getIntent().getParcelableExtra("loggedInAdmin");
+        loggedAdmin = getIntent().getParcelableExtra("loggedInAdmin");
 
         if (loggedAdmin == null) {
             Intent intent = new Intent(ManageProductsActivity.this, LoginActivity.class);

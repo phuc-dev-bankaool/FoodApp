@@ -28,11 +28,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         void onAddToCart(Food food);
     }
 
-    private Context context;
+    private final Context context;
     private List<Food> foodList;
-    private OnFoodActionListener adminListener;
-    private OnAddToCartListener cartListener;
-    private boolean isAdmin;
+    private final OnFoodActionListener adminListener;
+    private final OnAddToCartListener cartListener;
+    private final boolean isAdmin;
 
     // Adapter cho admin
     public FoodAdapter(Context context, List<Food> foodList, OnFoodActionListener listener) {

@@ -50,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(View -> loginUser());
     }
 
-    //check user by call checkUser method in DatabaseHelper
     private void loginUser() {
         String email = emailEditText.getText().toString().trim();
         String pwd = passwordEditText.getText().toString().trim();

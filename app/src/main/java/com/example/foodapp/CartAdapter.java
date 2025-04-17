@@ -18,10 +18,10 @@ import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
-    private Context context;
-    private List<Cart> cartItems;
-    private OnCartItemListener listener;
-    private DatabaseHelper databaseHelper;
+    private final Context context;
+    private final List<Cart> cartItems;
+    private final OnCartItemListener listener;
+    private final DatabaseHelper databaseHelper;
 
     public CartAdapter(Context context, List<Cart> cartItems, OnCartItemListener listener) {
         this.context = context;

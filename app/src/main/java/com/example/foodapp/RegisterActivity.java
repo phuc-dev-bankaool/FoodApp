@@ -54,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String pwd = passwordEditText.getText().toString().trim();
         String confirmPwd = confirmPasswordEditText.getText().toString().trim();
-        String adminCode = adminCodeEditText.getText().toString().trim(); // mới thêm
+        String adminCode = adminCodeEditText.getText().toString().trim();
 
         if (name.isEmpty() || email.isEmpty() || pwd.isEmpty() || confirmPwd.isEmpty()) {
             Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show();
